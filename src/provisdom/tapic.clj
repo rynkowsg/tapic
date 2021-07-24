@@ -4,8 +4,9 @@
 
 (defn ttap>
   "Send the value 'v' to the topic function with key 'topic'."
-  [topic value]
-  (tap> {::topic topic ::value value}))
+  ([value] (ttap> :default value))
+  ([topic value]
+   (tap> {::topic topic ::value value})))
 
 (defonce ^:private ttaps (atom {}))
 
@@ -16,19 +17,21 @@
 
 (defn swap-ttap
   "Replaces the tap function for 'topic' with 'f'."
-  [topic f]
-  (when (empty? @ttaps)
-    (add-tap route-topic))
-  (swap! ttaps assoc topic f)
-  nil)
+  ([f] (swap-ttap :default f))
+  ([topic f]
+   (when (empty? @ttaps)
+     (add-tap route-topic))
+   (swap! ttaps assoc topic f)
+   nil))
 
 (defn remove-ttap
   "Removes the tap function for 'topic'."
-  [topic]
-  (swap! ttaps dissoc topic)
-  (when (empty? @ttaps)
-    (remove-tap route-topic))
-  nil)
+  ([] (remove-ttap :default))
+  ([topic]
+   (swap! ttaps dissoc topic)
+   (when (empty? @ttaps)
+     (remove-tap route-topic))
+   nil))
 
 (defn clear-ttaps
   "Clears taps for all topics. Non-topic taps are unaffected."
