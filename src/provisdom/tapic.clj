@@ -39,3 +39,7 @@
   (reset! ttaps {})
   (remove-tap route-topic)
   nil)
+
+(defonce default (atom {}))
+
+(swap-ttap :default #(reset! default %))
